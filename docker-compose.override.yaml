@@ -1,0 +1,16 @@
+# Подхватывается автоматически рядом с официальным docker-compose.yaml Airflow.
+# Библиотеки plotly/openpyxl ставятся ТОЛЬКО в worker (он выполняет задачи); веб-сервер, планировщик и процессор DAG их не требуют.
+x-mounts: &mounts
+  volumes: ["./data:/opt/airflow/data", "./sql:/opt/airflow/sql", "./output:/opt/airflow/output"]
+
+services:
+  airflow-apiserver:
+    <<: *mounts
+  airflow-scheduler:
+    <<: *mounts
+  airflow-dag-processor:
+    <<: *mounts
+  airflow-worker:
+    <<: *mounts
+    environment:
+      _PIP_ADDITIONAL_REQUIREMENTS: "pandas plotly openpyxl"
